@@ -1,16 +1,16 @@
 import React from "react";
 import navlinks from "@/data/nav";
 import Link from "next/link";
-import { CgSun } from "react-icons/cg";
+import { RiSunLine, RiMoonClearFill } from "react-icons/Ri";
 import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
 
 const Nav = () => {
   const router = useRouter();
-
-  console.log(router.pathname, "router.pathname");
+  const { theme, setTheme } = useTheme();
 
   return (
-    <nav className="text-navy max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto px-8">
+    <nav className=" max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto px-8 text-navy dark:text-white">
       <Link href="/">Home</Link>
       <div className="flex items-center">
         {navlinks.map((nav) => (
@@ -26,7 +26,9 @@ const Nav = () => {
             {nav.title}
           </Link>
         ))}
-        <CgSun />
+        <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+          {theme === "dark" ? <RiSunLine /> : <RiMoonClearFill />}
+        </button>
       </div>
     </nav>
   );
