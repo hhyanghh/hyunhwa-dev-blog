@@ -5,7 +5,7 @@ import { CgSun } from "react-icons/cg";
 
 const Nav = () => {
   return (
-    <nav className="text-black max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto px-8">
+    <nav className="text-navy max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto px-8">
       <Link href="/">Home</Link>
       <div className="flex items-center">
         {navlinks.map((nav) => (
