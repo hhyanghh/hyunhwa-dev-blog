@@ -10,7 +10,7 @@ const Nav = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <nav className=" max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto px-8 text-navy dark:text-white">
+    <nav className=" max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto text-navy dark:text-white">
       <Link href="/">Home</Link>
       <div className="flex items-center">
         {navlinks.map((nav) => (
