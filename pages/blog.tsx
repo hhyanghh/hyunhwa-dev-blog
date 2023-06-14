@@ -1,5 +1,10 @@
-import Container from "@/components/Container";
+import BlogPost from "@/components/BlogPost";
 
 export default function Blog() {
-  return <span className="font-bold">BLOG</span>;
+  return (
+    <>
+      <div className="font-bold">BLOG</div>
+      <BlogPost />
+    </>
+  );
 }
