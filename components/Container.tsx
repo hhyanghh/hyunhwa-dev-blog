@@ -8,7 +8,7 @@ const Container = (props) => {
       <Header>
         <Nav />
       </Header>
-      <main className="w-full min-h-screen">
+      <main className="w-full min-h-screen px-3">
         <div className="max-w-screen-md mx-auto">{props.children}</div>
       </main>
       <Footer />
