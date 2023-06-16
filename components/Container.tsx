@@ -5,9 +5,7 @@ import Footer from "./Footer";
 const Container = (props) => {
   return (
     <>
-      <Header>
-        <Nav />
-      </Header>
+      <Header />
       <main className="w-full min-h-screen px-3">
         <div className="max-w-screen-md mx-auto">{props.children}</div>
       </main>

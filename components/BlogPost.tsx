@@ -1,11 +1,12 @@
+import React from "react";
 import Link from "next/link";
 
-const BlogPost = () => {
+const BlogPost = ({ date, title, description, slug }) => {
   return (
-    <Link href="/" passHref className="mt-5">
-      <div className="text-xs font-light">08 June, 2023</div>
-      <div className="font-medium text-xl">제목이 표시되는 공간 블라블라</div>
-      <div className="font-light">설명이 표시되는 공간 블라블라블라</div>
+    <Link href={`/blog/${slug}`} passHref className="mt-5">
+      <div className="text-xs font-light">{date}</div>
+      <div className="font-medium text-xl">{title}</div>
+      <div className="font-light">{description}</div>
     </Link>
   );
 };
