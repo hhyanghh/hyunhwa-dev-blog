@@ -3,14 +3,17 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useMDXComponent } from "next-contentlayer/hooks";
 import { allPosts } from "../../.contentlayer/generated";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useRouter } from "next/router";
 
 const PostDetailPage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ post }) => {
+  const router = useRouter();
+
   const MDXComponent = useMDXComponent(post?.body.code);
 
   const handleClick = () => {
-    console.log("뒤로가기>>>");
+    router.back();
   };
   return (
     <>
