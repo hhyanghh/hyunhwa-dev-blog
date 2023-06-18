@@ -10,7 +10,7 @@ export default function HomeProfile() {
         <Image
           src={bgImage}
           alt="Background Image"
-          className="w-full h-full object-cover transform scale-105 transition-transform duration-300 hover:scale-100 hover:brightness-90"
+          className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-105 hover:brightness-90"
         />
       </div>
       <div className="text-white absolute top-20 left-10 font-semibold text-xl">
