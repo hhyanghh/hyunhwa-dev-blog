@@ -1,22 +1,20 @@
 import React from "react";
-import Link from "next/link";
-import BlogPost from "./BlogPost";
+import BlogListTitle from "./BlogListTitle";
 
 const RecentPosts = ({ posts }) => {
   return (
     <div className="mt-10">
       <h1 className="text-3xl font-extrabold">👀 Recent Posts</h1>
-      <div className="flex flex-col">
+      <ul className="flex flex-col mt-5 gap-1">
         {posts.map((post) => (
-          <BlogPost
+          <BlogListTitle
             date={post.date}
             title={post.title}
-            description={post.description}
             key={post._id}
             slug={post._raw.flattenedPath}
           />
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
