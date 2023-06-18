@@ -5,7 +5,7 @@ const RecentPosts = ({ posts }) => {
   return (
     <div className="mt-10">
       <h1 className="text-3xl font-extrabold">👀 Recent Posts</h1>
-      <ul className="flex flex-col mt-5 gap-1">
+      <ul className="flex flex-col mt-5 ">
         {posts.map((post) => (
           <BlogListTitle
             date={post.date}

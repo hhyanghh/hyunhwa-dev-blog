@@ -7,12 +7,10 @@ const BlogListTitle = ({ date, title, slug }) => {
       <Link
         href={`/blog/${slug}`}
         passHref
-        className="flex justify-between items-center hover:text-orange"
+        className="flex justify-between items-center hover:bg-gray-200 dark:hover:bg-yellow  p-1"
       >
         <div className="font-medium">{title}</div>
-        <div className="font-light bg-navy text-white text-xs p-1 rounded-lg">
-          {date}
-        </div>
+        <div className="font-light text-xs p-1 rounded-lg">{date}</div>
       </Link>
     </li>
   );
