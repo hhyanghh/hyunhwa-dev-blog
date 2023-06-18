@@ -6,9 +6,10 @@ interface CategoryListProps {
   sellect: string;
 }
 
-const sellectedStyle = "bg-orange px-2 py-1 bg-orange rounded-xl sm:text-lg";
+const sellectedStyle =
+  "bg-navy text-white dark:bg-orange px-2 py-1 rounded-xl sm:text-lg ";
 const defaultStyle =
-  "bg-gray-300 px-2 py-1 sm:text-lg rounded-xl transition-transform duration-300 hover:bg-orange";
+  "bg-gray-300 dark:text-black hover:bg-navy hover:text-white hover:dark:bg-orange px-2 py-1 sm:text-lg rounded-xl transition-transform duration-300  ";
 
 export default function CategoryList({
   setSellect,
