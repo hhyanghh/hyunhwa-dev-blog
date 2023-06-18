@@ -11,7 +11,6 @@ const Nav = () => {
 
   return (
     <nav className=" max-w-screen-md h-20 flex flex-nowrap items-center justify-between m-auto text-navy dark:text-white">
-      <Link href="/">Home</Link>
       <div className="flex items-center">
         {navlinks.map((nav) => (
           <Link
@@ -26,10 +25,10 @@ const Nav = () => {
             {nav.title}
           </Link>
         ))}
-        <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-          {theme === "dark" ? <RiSunLine /> : <RiMoonClearFill />}
-        </button>
       </div>
+      <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+        {theme === "dark" ? <RiSunLine /> : <RiMoonClearFill />}
+      </button>
     </nav>
   );
 };
