@@ -25,7 +25,9 @@ const PostDetailPage: React.FC<
           {post?.date}
         </div>
       </div>
-      <MDXComponent />
+      <div className="prose dark:prose-invert">
+        <MDXComponent />
+      </div>
       <IoMdArrowRoundBack
         size={24}
         onClick={handleClick}
