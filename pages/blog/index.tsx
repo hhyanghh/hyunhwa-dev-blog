@@ -4,6 +4,7 @@ import { InferGetStaticPropsType } from "next";
 import { allPosts, Post } from "../../.contentlayer/generated";
 import PostList from "@/components/PostList";
 import CategoryList from "@/components/CategoryList";
+import Empty from "@/components/Empty";
 
 export const getStaticProps = async () => {
   const posts = allPosts.sort(
@@ -18,11 +19,15 @@ export const getStaticProps = async () => {
 
 const Blog = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [sellect, setSellect] = useState<string>("");
+
   return (
     <div className="flex flex-col">
       <CategoryList sellect={sellect} setSellect={setSellect} />
       {sellect === "" ? (
         <PostList posts={posts} />
+      ) : (posts as Post[]).filter((post) => post.category === sellect)
+          .length === 0 ? (
+        <Empty />
       ) : (
         <PostList
           posts={(posts as Post[]).filter((post) => post.category === sellect)}
