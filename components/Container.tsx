@@ -4,13 +4,13 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 const Container = (props) => {
   return (
-    <>
+    <div className="min-h-screen relative">
       <Header />
-      <main className="w-full px-3">
+      <main className="w-full px-3 pb-20">
         <div className="max-w-screen-md mx-auto">{props.children}</div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 };
 
