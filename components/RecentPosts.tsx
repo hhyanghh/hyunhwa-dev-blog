@@ -10,6 +10,7 @@ const RecentPosts = ({ posts }) => {
           <BlogListTitle
             date={post.date}
             title={post.title}
+            category={post.category}
             key={post._id}
             slug={post._raw.flattenedPath}
           />
