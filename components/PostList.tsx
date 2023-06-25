@@ -1,5 +1,5 @@
 import React from "react";
-import { Post } from "../.contentlayer/generated";
+import { Post } from "@/.contentlayer/generated";
 import BlogPost from "@/components/BlogPost";
 
 interface RecentPostsProps {
