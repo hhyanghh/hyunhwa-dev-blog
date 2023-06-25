@@ -1,5 +1,4 @@
-import { withContentlayer } from "next-contentlayer";
-// import { withContentlayer } from "next-contentlayer";
+const { withContentlayer } = require("next-contentlayer");
 
 /** @type {import('next').NextConfig} */
 const options = {
@@ -7,4 +6,4 @@ const options = {
   swcMinify: false,
 };
 
-export default withContentlayer(options);
+module.exports = withContentlayer(options);
