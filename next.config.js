@@ -2,8 +2,11 @@ const { withContentlayer } = require("next-contentlayer");
 
 /** @type {import('next').NextConfig} */
 const options = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: false,
+  experimental: {
+    scrollRestoration: true,
+  },
 };
 
 module.exports = withContentlayer(options);

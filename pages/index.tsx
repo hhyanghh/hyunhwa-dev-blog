@@ -2,7 +2,7 @@ import React from "react";
 import { Inter } from "next/font/google";
 import RecentPosts from "@/components/RecentPosts";
 import HomeProfile from "@/components/HomeProfile";
-import { allPosts } from "@/contentlayer/generated";
+import { allPosts } from "contentlayer/generated";
 import { InferGetStaticPropsType } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
