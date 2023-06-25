@@ -1,0 +1,127 @@
+---
+title: React Router
+date: 2023-06-25
+description: React Router 사용이유, Hooks
+category: react
+---
+
+# React router
+
+### Routing 이란?
+
+- URL에 따라서 그에 상응하는 화면을 전송해주는 것
+
+### React Router를 사용하는 이유
+
+- React Router는 URL을 어느 페이지로 연결시킬지 결정하는 일을 한다.
+- 🤔 단순 Link 태그나, a 태그를 사용하지 않는 이유는?: **리엑트는 SPA Single Page Application 이다.**
+  - 모든 컴포넌트의 변화가 하나의 페이지 안에서 일어난다.
+  - 다른 URL로 이동하면 → 페이지 전체가 교체되는 것이 아니라
+  - 한 페이지 내부에서 컴포넌트의 변화가 일어나는 것이다.
+  - 이 경우의 `단점`들은 아래와 같다.
+    1. 특정 페이지 **즐겨찾기 등록 불가** (화면이 전환되어도 브라우저 주소창의 URL은 고정되어있기 때문)
+    2. 원하는 **뒤로가기** 기능 불가 (아예 이전에 서핑하던 다른 웹사이트로 이동해버린다.)
+    3. **새로고침** 시 현재 사용중이던 화면이 아닌 아예 index 메인으로 이동
+- 따라서 이런 점을 보완하기 위해 React Router 같은 **`네비게이션 라이브러리`**를 사용해야 한다.
+
+### 1. routes 설정
+
+(실제로 라우터를 설정하는 방법은 더 다양할 것, 아래는 축약!)
+
+🗂️ App.js
+
+```jsx
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "/videos",
+        element: <Videos />,
+      },
+      {
+        path: "/videos/:videoId",
+        element: <VideoDetail />,
+      },
+    ],
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router}>App</RouterProvider>;
+}
+
+export default App;
+```
+
+### 2. react-router-dom Hooks 사용해보기
+
+> `useParams` : Path Parameter 값 구할 때 사용 <br /> `useLocation` : pathname과 query parameter 값 구할 때 사용 <br /> `useSearchParms`
+
+✅ 접속 URL : http://localhost:3000/videos/params
+
+1. useParmas
+
+   ```jsx
+   import { useParms } from "react-router-dom";
+
+   //..
+   const parms = useParmas();
+   console.log(params);
+   ```
+
+   ![console_1](/images/blog/console_1.png)
+
+   - key: `path: "/videos/:**videoId**",`
+   - value: parms (현재 주소창에 있는 값)
+   - **parh parameter**의 값들을 바로 사용하기에 좋다.
+
+2. useLocation
+
+   ```jsx
+   import { useLocation } from "react-router-dom";
+
+   //..
+   const location = useLocation();
+   console.log(location);
+   ```
+
+   - location 객체의 프로퍼티들은 아래와 같다.
+
+   ```jsx
+   {
+   	pathname: '현재 경로 값',
+   	search: '현재 경로의 query parameter 값',
+   	hash: '',
+   	state: null,
+   	key: 'default',
+   }
+   ```
+
+   ![console_2](/images/blog/console_2.png)
+
+3. useSearchParams
+
+   - 보면 위의 location.search의 값은 사용하기에 불편함이 있다.
+   - (원하는 값인 1111을 사용하기 위해 가공을 해야한다.)
+   - 이럴때 사용할 수 있는 hook이 useSearchParams 이다.
+
+   ```jsx
+   import { useLocation, useSearchParams } from "react-router-dom";
+
+   //..
+   const location = useLocation();
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   console.log(searchParams.get("test"), "searchParams");
+   ```
+
+   → console 결과는? 1111

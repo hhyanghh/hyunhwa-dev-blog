@@ -5,7 +5,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 export const Post = defineDocumentType(() => ({
   name: "Post",
   contentType: "mdx",
-  filePathPattern: `**/*.mdx`, // mdx 파일경로 패턴
+  filePathPattern: `**/*.mdx`,
 
   fields: {
     title: {
@@ -25,7 +25,6 @@ export const Post = defineDocumentType(() => ({
 }));
 
 const contentSource = makeSource({
-  // 마크다운 파일이 저장되어 있는 루트 폴더
   contentDirPath: "posts",
   documentTypes: [Post],
   mdx: {
@@ -34,7 +33,7 @@ const contentSource = makeSource({
       [
         rehypePrettyCode,
         {
-          theme: "github-dark", // 코드작성시 적용할 테마
+          theme: "github-dark",
         },
       ],
       highlight,
