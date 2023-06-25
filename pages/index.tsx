@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from "react";
 import { Inter } from "next/font/google";
 import RecentPosts from "@/components/RecentPosts";

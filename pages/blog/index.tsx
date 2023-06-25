@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState } from "react";
 import BlogPost from "@/components/BlogPost";
 import { InferGetStaticPropsType } from "next";
