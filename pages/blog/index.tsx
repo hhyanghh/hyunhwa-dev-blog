@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BlogPost from "@/components/BlogPost";
 import { InferGetStaticPropsType } from "next";
-import { allPosts, Post } from "../../.contentlayer/generated";
+import { allPosts, Post } from "@/.contentlayer/generated";
 import PostList from "@/components/PostList";
 import CategoryList from "@/components/CategoryList";
 import Empty from "@/components/Empty";

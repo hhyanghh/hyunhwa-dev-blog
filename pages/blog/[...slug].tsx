@@ -1,7 +1,7 @@
 import React from "react";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useMDXComponent } from "next-contentlayer/hooks";
-import { allPosts } from "../../.contentlayer/generated";
+import { allPosts } from "@/.contentlayer/generated";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
 
