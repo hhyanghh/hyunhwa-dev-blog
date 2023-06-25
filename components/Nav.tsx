@@ -1,7 +1,7 @@
 import React from "react";
 import navlinks from "@/data/nav";
 import Link from "next/link";
-import { RiSunLine, RiMoonClearFill } from "react-icons/Ri";
+import { RiSunLine, RiMoonClearFill } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 
