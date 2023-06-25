@@ -9,6 +9,7 @@ const BlogListTitle = ({ date, title, slug, category }) => {
         passHref
         className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-yellow  p-1"
       >
+        <span>🗒️</span>
         <div className="font-medium text-left grow">{title}</div>
         <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-navy ring-1 ring-inset ring-gray-500/10">
           {category}
