@@ -17,7 +17,9 @@ const Nav = () => {
             href={nav.link}
             key={nav.title}
             className={`mr-5 ${
-              router.pathname === nav.link
+              (router.pathname === nav.link ||
+                (router.pathname.startsWith("/blog") &&
+                  nav.link.startsWith("/blog")))
                 ? "font-bold underline underline-offset-4"
                 : ""
             }`}
