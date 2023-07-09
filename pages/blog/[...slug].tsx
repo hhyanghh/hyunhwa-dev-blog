@@ -6,6 +6,7 @@ import { allPosts } from "contentlayer/generated";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { categorys } from "@/data/categories";
 
 const PostDetailPage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -13,6 +14,13 @@ const PostDetailPage: React.FC<
   const router = useRouter();
 
   const MDXComponent = useMDXComponent(post?.body.code);
+
+  const matchingCategory = categorys.find(
+    (category) => category.keyword === post.category
+  );
+  const categoryTitle = matchingCategory
+    ? matchingCategory.title
+    : "Uncategorized";
 
   const handleClick = () => {
     router.back();
@@ -26,7 +34,7 @@ const PostDetailPage: React.FC<
       </Head>
       <div className="flex flex-col items-center pt-8 pb-12">
         <div className="text-base font-semibold text-navy dark:text-orange">
-          #{post?.category}
+          #{categoryTitle}
         </div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">
           {post?.title}
