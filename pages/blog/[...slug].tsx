@@ -1,7 +1,8 @@
+//@ts-nocheck
 import React from "react";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useMDXComponent } from "next-contentlayer/hooks";
-import { allPosts } from "../../.contentlayer/generated";
+import { allPosts } from "contentlayer/generated";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -62,7 +63,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const postId = String(params?.slug.join("/"));
+  const postId = String((params?.slug as string[])?.join("/"));
 
   const post = allPosts.find(({ _raw }) => {
     return _raw.flattenedPath === postId;

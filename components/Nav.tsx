@@ -1,7 +1,7 @@
 import React from "react";
 import navlinks from "@/data/nav";
 import Link from "next/link";
-import { RiSunLine, RiMoonClearFill } from "react-icons/Ri";
+import { RiSunLine, RiMoonClearFill } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 
@@ -17,7 +17,9 @@ const Nav = () => {
             href={nav.link}
             key={nav.title}
             className={`mr-5 ${
-              router.pathname === nav.link
+              (router.pathname === nav.link ||
+                (router.pathname.startsWith("/blog") &&
+                  nav.link.startsWith("/blog")))
                 ? "font-bold underline underline-offset-4"
                 : ""
             }`}

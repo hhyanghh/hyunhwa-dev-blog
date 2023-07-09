@@ -1,15 +1,14 @@
 import React from "react";
-import { Post } from "../.contentlayer/generated";
 import BlogPost from "@/components/BlogPost";
 
 interface RecentPostsProps {
-  posts: Post[];
+  posts: any;
 }
 
 export default function PostList({ posts }: RecentPostsProps) {
   return (
     <div className="flex flex-col mt-5">
-      {posts.map((post: Post) => (
+      {posts.map((post: any) => (
         <BlogPost
           date={post.date}
           title={post.title}
