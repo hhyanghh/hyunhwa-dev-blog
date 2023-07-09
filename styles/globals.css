@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  code::before {
+    content: "" !important;
+  }
+  code::after {
+    content: "" !important;
+  }
+  code {
+    @apply bg-slate-200 p-1 rounded-sm;
+  }
+}
