@@ -1,0 +1,214 @@
+---
+title: children props, React.Children
+date: 2023-07-09
+description: 리엑트의 children props, 유용하게 사용할 React.Children API
+category: react
+---
+
+### 1. children?
+
+React는 JSX 문법을 사용하고 있다.
+
+JSX는 html과 유사한 문법으로 `< >` 사이에 타입과 속성을 부여해 프로젝트 구조를 짜는 목적으로 사용된다.
+
+이러한 컴포넌트들 사이에는 포함관계를 설정할 수 있는데, 이때 상위 컴포넌트를 parent component, 하위 컴포넌트를 child component라고 부른다.
+
+그리고 부모-자식 관계가 설정되면 부모 컴포넌트 내부에서는 `children prop`을 통해 자식 컴포넌트 정보에 접근할 수 있다.
+
+- 부모 컴포넌트 내부에서는 자식 컴포넌트 정보에 접근할 수 있는데, 바로 이때 사용되는 것이 children prop이다.
+- 부모는 자식 컴포넌트에서 렌더링되는 내용을 알 필요가 없다 → 유연성
+
+### 2. Children API의 필요성
+
+(React는 컴포넌트의 자식으로 무엇이든지 사용할 수 있도록 상당히 유연하게 설계되어있다.)
+
+`children` prop의 자료형(data type)을 예상할 수 없다.
+
+그러므로 children prop을 상대로 직접 프로그래밍하게 되면 버그가 발생하기 쉽다.
+
+따라서 리엑트에서는 Children이라는 별도의 API를 제공하며,
+
+우리는 `Children API`를 통해서 `children`을 좀 더 안전하게 다룰 수 있다.
+
+### 3. Children API의 접근방법
+
+```jsx
+import React from "react";
+
+function ReactChildren({ children }) {
+  console.log(React.Children);
+  return <>ReactChildren</>;
+}
+```
+
+→
+
+```jsx
+{map: ƒ, forEach: ƒ, count: ƒ, toArray: ƒ, only: ƒ}
+```
+
+### 3-1. React.Children.map();
+
+- 이 함수는 첫번째 인자로는 children prop을 받고,
+- 두번째 인자로는 콜백 함수를 받는다.
+- 이 콜백함수에는 각 자식과 인덱스가 인자로 주어지기때문에, 우리는 이 콜백함수를 통해서 각 자식을 다른 형태로 변환할 수 있다.
+
+- Children.map() 함수의 시그니처 타입
+
+```jsx
+map(children: unknown, fn: (child: unknown, index: number) => unknown): unknown[]
+```
+
+- ✅ 홀수번째 자식의 글씨를 굵게 하고, 짝수번째 자식에 밑줄을 그어주는 컴포넌트 만들기
+
+```jsx
+function Map({children}) {
+	return React.Children.map(children, (child, i) =>
+		i % === 0 ? <b>{child}</b> : <u>{child}</u>
+	);
+}
+
+//
+<Map>
+	<span>AAA</span>
+	<span>BBB</span>
+	<span>CCC</span>
+	<span>DDD</span>
+	<span>EEE</span>
+	<span>FFF</span>
+</Map>
+```
+
+- Children.map() 을 사용하면 children prop이 HTML/REACT 요소나 함수일때는 마치 하나의 원소가 들어있는 배열처럼 처리를 해주고, null 일때는 빈 배열처럼 처리를 해준다.
+- 따라서 항상 배열을 다루는 것처럼 안전하게 API를 쓸 수 있다.
+
+### 3-2. React.**Children.forEach()**
+
+- Children.map() 과 비슷하지만, 두번쨰 인자로 넘어가는 콜백 함수가 아무것도 반환하지 않는다는 차이가 있다.
+
+- Children.**forEach**() 함수의 시그니처 타입
+
+```jsx
+forEach(children: unknown, fn: (child: unknown, index: number) => **void**): unknown[]
+```
+
+- 보통 forEach() 함수 외부에서 선언된 변수를 갱신하는 용도로 많이 사용한다.
+
+- ✅ 모든 자식이 담고 있는 문자열의 길이를 더해서 표시해주는 컴포넌트 만들기
+
+```jsx
+function ForEach({ children }) {
+  let count = 0;
+  React.Children.forEach(children, (child) => {
+    count += child.length;
+  });
+
+  return (
+    <>
+      {children}
+      {`(총 글자수: ${count})`}
+    </>
+  );
+}
+
+//
+<ForEach>
+  {"AAA"}
+  {"BBB"}
+  {"CCC"}
+  {"DDD"}
+  {"EEE"}
+  {"FFF"}
+</ForEach>;
+```
+
+### 3-3. React.**Children.count()**
+
+- 자식의 개수를 구할때 사용한다.
+- 인자로 children prop 하나만 받으며, 해당 컴포넌트로 넘어온 자식이 몇개인지 반환한다.
+- children prop이 반드시 배열이 아니더라도 Children.count() 함수는 안전하게 작동한다.
+- 자식이 null 이면 0 반환, 자식이 하나밖에 없으면 1 반환
+
+- ✅ 자식의 개수를 화면에 추가로 보여주는 컴포넌트 작성
+
+```jsx
+function Count({ children }) {
+  const count = React.Children.count(children);
+
+  return (
+    <>
+      {children}
+      {`(총 자식수: ${count})`}
+    </>
+  );
+}
+
+//
+
+<Count>
+  <span>AAA</span>
+  <span>BBB</span>
+  <span>CCC</span>
+  <span>DDD</span>
+  <span>EEE</span>
+  <span>FFF</span>
+</Count>;
+```
+
+### 3-4. React.**Children.toArray()**
+
+- 자식을 일반 자바스크립트 배열로 반환해준다.
+- 자식을 상대로 join(), reverse(), sort(), filter(), reduce() 와 같은 자바스크립트 배열에서 제공하는 내장함수를 사용하고 싶을때 유용하다.
+
+- ✅ 홀수번째 자식만 화면에 그려주는 컴포넌트
+
+```jsx
+const ToArray = ({ children }) => {
+  const array = React.Children.toArray(children);
+  return array.filter((child, i) => i % 2 === 0);
+};
+
+//
+
+<ToArray>
+  {"AAA"}
+  {"BBB"}
+  {"CCC"}
+  {"DDD"}
+  {"EEE"}
+  {"FFF"}
+</ToArray>;
+```
+
+### 3-5. React.**Children.only()**
+
+- 컴포넌트에 자식이 하나만 넘어왔는지 검증하고 싶을 때 사용
+- 자식이 없거나, 여러개의 자식이 넘어왔다면 다음과 같은 오류가 발생한다.
+- `React.Children.only expected to receive a single React element child.`
+- 자식이 하나라도 HTML 요소나 REACT 요소가 아니면 오류가 발생한다.
+
+- ✅ 자식이 하나가 아닌 경우에 오류를 발생시키는 컴포넌트 작성하기
+
+```jsx
+const Only = ({children}) => {
+	return React.Children.only(children);
+}
+
+//..
+/* 정상 작동 (AAA 표시) */
+<Only>
+  <span>AAA</span>
+</Only>
+
+/* 오류 */
+<Only>
+  <span>AAA</span>
+  <span>BBB</span>
+</Only>
+
+/* 오류 */
+<Only/>
+
+/* 오류 (하나의 자식이지만 문자열임) */
+<Only>AAA</Only>
+```
