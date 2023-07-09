@@ -5,6 +5,7 @@ import { useMDXComponent } from "next-contentlayer/hooks";
 import { allPosts } from "contentlayer/generated";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const PostDetailPage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -16,8 +17,13 @@ const PostDetailPage: React.FC<
   const handleClick = () => {
     router.back();
   };
+
   return (
     <>
+      <Head>
+        <title>{post?.title} - 현화로그</title>
+        <meta name="description" content={post?.description} />
+      </Head>
       <div className="flex flex-col items-center pt-8 pb-12">
         <div className="text-base font-semibold text-navy dark:text-orange">
           #{post?.category}
