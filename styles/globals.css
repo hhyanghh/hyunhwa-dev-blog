@@ -12,4 +12,7 @@
   code {
     @apply bg-slate-200 p-1 rounded-sm;
   }
+  code {
+    @apply text-orange !important;
+  }
 }
