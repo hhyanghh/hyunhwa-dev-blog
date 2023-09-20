@@ -1,0 +1,165 @@
+---
+title: 데이터 통신 이해하기
+date: 2023-09-20
+description: 키워드 기반으로 데이터 통신에 대해 자세히 다뤄보기.
+category: it
+---
+
+### 1. HTTP 프로토콜 이해하기
+
+- HTTP의 정의와 역할
+
+```jsx
+HTTP (Hypertext Transfer Protocol)는 웹에서 데이터를 주고받는
+프로토콜로, 클라이언트와 서버 간의 통신을 가능하게 한다.
+클라이언트가 요청(Request)을 보내고 서버가 응답(Response)을 보내는 방식으로
+동작한다.
+```
+
+### 2. 클라이언트와 서버 통신
+
+- 클라이언트-서버 모델
+
+```jsx
+클라이언트와 서버 간의 상호작용을 말한다.
+- 클라이언트 : 사용자가 웹 브라우저를 통해 접속한 디바이스
+- 서버 : 웹 페이지나 데이터를 제공하는 컴퓨터 시스템
+```
+
+### 3. HTTP 요청과 응답의 구조
+
+![HTTP 요청과 응답의 구조](/images/blog/http_01.png)
+
+1. **Response**
+   - Start Line : 요청의 첫번쨰 줄
+     - HTTP Method : 해당 요청이 의도한 액션 / GET, POST, DELETE, 등
+     - Request target : 해당 요청이 전송되는 목표 url
+     - HTTP Version
+     ```jsx
+     GET /login HTTP/1.1
+     ```
+   - Headers : 해당 요청에 대한 추가 정보 (메타 데이터)를 담고 있는 부분
+     - Key - Value 로 되어있다.
+     - **Host** : 요청을 보내는 목표(타겟)의 주소. 즉, 요청을 보내는 웹사이트의 기본 주소
+     - **User-Agent** : 요청을 보내는 클라이언트의 대한 정보 (chrome, firefox, 등등)
+     - **Content-Type** : 해당 요청이 보내는 메세지 body의 타입 (application/json)
+     - **Client-Length** : body 내용의 길이
+     - **Authorization** : 회원의 인증/인가를 처리하기 위해 로그인 토큰을 Authroization에 담는다.
+   - Body : 해당 요청의 실제 내용
+     ```jsx
+     Body: {
+     	"user_email": "hh@hh.hh",
+     	"user_password": "112233"
+     }
+     ```
+2. **Response**
+
+   - Status Line : 응답의 상태 줄. 응답은 요청에 대한 처리상태를 클라이언트에게 알려주면서 내용을 시작한다.
+
+     - HTTP Version : 요청의 HTTP 버전과 동일
+     - Status Code : 상태코드
+     - Status Text : 응답 메시지의 상태를 간략하게 설명해주는 텍스트
+
+     ```jsx
+     HTTP/1.1 404 Not Found
+     : HTTP 1.1 버전으로 응답하고 있는데, 프론트엔드에서 보낸 요청에 대해서
+     유저의 정보를 찾을 수 없기 떄문에 404 에러 상태메세지를 보낸다.
+
+     HTTP/1.1 200 SUCCESS
+     ```
+
+   - Headers: 응답의 추가 정보(메타 데이터)를 담고 있는 부분
+     - **Content-Type** : 응답 본문의 미디어 타입
+     - **Location** : 리디렉션된 데이터의 위치
+     - **Cache-Control** : 응답 캐싱을 관리하기 위한 지시사항을 제공
+   - Body
+     ```jsx
+     // 로그인 요청에 대해 성공했을때 응답의 body
+     Body: {
+     	"message": "SUCCESS",
+     	"token": "kckjskdjfvjkwsfnv" (암호화된 유저의 정보)
+     }
+     ```
+
+### 4. HTTP 메서드(GET, POST, PUT, DELETE 등)의 의미와 사용 예시
+
+![HTTP 메서드](/images/blog/http_02.png)
+
+### 5. Response Status Codes
+
+![Response Status Codes](/images/blog/http_03.png)
+
+### 6. API와 데이터 송수신
+
+- API (Application Programing Interface)의 개념
+
+```jsx
+# API 란?
+- API는 소프트웨어 애플리케이션 간에 상호 작용하기 위한 규칙과 도구의 집합
+- 개발자가 특정 서비스 또는 기능을 활용하고자 할때, 해당 서비서의 API를 사용하여
+데이터를 요청하거나 작업을 수행할 수 있다.
+```
+
+- 클라이언트에서 API를 호출하는 방법 (fetch, axios, apollo)
+
+```jsx
+# fetch API
+- fetch API는 브라우저 내장 API로, HTTP 요청을 보내고 응답을 처리할 수 있다.
+
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+```
+
+```jsx
+# axios
+- 설치필요
+- 브라우저와 Node.js에서 사용할 수 있는 HTTP 클라이언트 라이브러리
+- fetch보다 편리
+
+axios.get('https://api.example.com/data')
+  .then(response => console.log(response.data))
+  .catch(error => console.error('Error:', error));
+```
+
+```jsx
+# Apollo Client
+- 설치필요
+- GraphQL API와 상호작용하기 위한 클라이언트 라이브러리
+- GraphQL은 REST API보다 효율적이다. (성능개션)
+- Apollo Client는 GraphQL 쿼리를 보내고 응답을 관리하는데 사용
+
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'https://graphql.example.com',
+  cache: new InMemoryCache()
+});
+
+client.query({
+  query: gql`
+    query {
+      posts {
+        title
+      }
+    }
+  `
+})
+  .then(result => console.log(result.data))
+  .catch(error => console.error('Error:', error));
+```
+
+- 서버에서 데이터를 제공하는 방법
+
+```jsx
+# RESTful API
+- REST 는 HTTP 기반으로 자원을 나타내고 상태를 전달하는 아키텍쳐 스타일
+- 리소스를 URL로 표현하고, HTTP 메서드(GET, POST, PUT, DELETE)를 사용
+
+# GraphQL
+- 클라이언트가 필요한 데이터를 정확하게 요청할 수 있는 쿼리 언어와 서버 사이의
+쿼리 실행 엔진을 제공하는 쿼리 언어
+- 클라이언트가 필요한 데이터의 구조와 양을 정의하고,
+서버는 해당 쿼리를 해석하여 필요한 데이터만 응답한다.
+```
