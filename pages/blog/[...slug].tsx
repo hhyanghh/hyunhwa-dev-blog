@@ -29,7 +29,7 @@ const PostDetailPage: React.FC<
   return (
     <>
       <Head>
-        <title>{post?.title} - 현화로그</title>
+        <title>{post?.title} - 현화로그 | 기록하며 성장하는 여정</title>
         <meta name="description" content={post?.description} />
       </Head>
       <div className="flex flex-col items-center pt-8 pb-12">
