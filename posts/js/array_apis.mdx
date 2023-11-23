@@ -1,0 +1,179 @@
+---
+title: 유용한 Array(배열) APIs 정리
+date: 2023-11-23
+description: 짱 많이 사용하는 배열 APIs 정리 (계속 정리 예정)
+category: js
+---
+
+### LIST
+
+- ◻️ map
+- ◻️ find
+- ◻️ findIndex
+- ◻️ filter
+- 🔥 redecue
+
+### ◻️ map
+
+```jsx
+map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
+```
+
+- **📘 정의** : 배열 내의 모든 요소 각각에 대하여 주어진 함수를 호출한 결과를 모아 새로운 배열을 반환
+- **매개변수** : 함수(value, index, array)
+- **기존배열을?** : 수정하지 않는다.
+- **return** : 새로운 배열을 반환
+- **👀 예제**
+  ```jsx
+  // 짝수만 두배씩 곱한 새로운 배열
+  const nums = [1, 2, 3, 4, 5];
+  const reslut = nums.map((item) => {
+    if (item % 2 === 0) {
+      return item * 2;
+    } else {
+      return item;
+    }
+  });
+  ```
+
+### ◻️ find
+
+```jsx
+find<S extends T>(predicate: (this: void, value: T, index: number, obj: T[]) => value is S, thisArg?: any): S | undefined;
+
+find(callbackFn)
+find(callbackFn, thisArg)
+```
+
+- **📘 정의** : 주어진 함수의 조건을 만족하는 첫 번째 요소를 찾아 반환
+- **매개변수** : 콜백함수(element, index, array)
+- **기존배열을?** : 수정하지 않는다.
+- **return** : 조건을 만족하는 첫번째 요소
+- **👀 예제**
+
+  ```jsx
+  // 점수가 90점인 학생 찾기
+
+  class Student {
+    constructor(name, age, enrolled, score) {
+      this.name = name;
+      this.age = age;
+      this.enrolled = enrolled;
+      this.score = score;
+    }
+  }
+
+  const students = [
+    new Student("A", 29, false, 45),
+    new Student("B", 28, true, 80),
+    new Student("C", 30, true, 90),
+    new Student("D", 40, false, 66),
+    new Student("E", 19, true, 88),
+  ];
+
+  const result = students.find((student) => student.score === 90);
+  ```
+
+### ◻️ findIndex
+
+```jsx
+findIndex(callbackFn);
+findIndex(callbackFn, thisArg);
+```
+
+- **📘 정의** : 주어진 함수의 조건을 만족하는 첫 번째 요소의 인덱스를 반환
+- **매개변수** : 콜백함수(element, index, array)
+- **기존배열을?** : 수정하지 않는다.
+- **return** : 조건을 만족하는 첫번째 요소의 index
+
+### ◻️ filter
+
+```jsx
+filter(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
+```
+
+- **📘 정의** : 주어진 함수의 조건을 만족하는 모든 요소를 포함하는 새로운 배열을 반환
+- **매개변수** : 콜백함수 (element, index, array)
+- **기존배열을(**) : 수정하지 않는다.
+- **return** : 조건을 만족하는 요소들로 이루어진 새로운 배열
+- **👀 예제**
+
+  ```jsx
+  class Student {
+    constructor(name, age, enrolled, score) {
+      this.name = name;
+      this.age = age;
+      this.enrolled = enrolled;
+      this.score = score;
+    }
+  }
+
+  const students = [
+    new Student("A", 29, false, 45),
+    new Student("B", 28, true, 80),
+    new Student("C", 30, true, 90),
+    new Student("D", 40, false, 66),
+    new Student("E", 19, true, 88),
+  ];
+
+  // 등록된 학생들의 배열 만들기
+  const result = students.filter((student) => student.enrolled);
+
+  // 점수가 80점 이상인 학생들만
+  const moreThan80Score = students.filter((student) => student.score >= 80);
+  ```
+
+### 🔥 redecue
+
+```jsx
+reduce<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number,
+array: T[]) => U, initialValue: U): U;
+
+reduce(callbackFn, initialValue)
+```
+
+- **📘 정의** : 배열의 각 요소를 순회하며 callback 함수의 실행값을 누적하여 하나의 결과값을 반환한다.
+- **매개변수** : callbackfn(previousValue, currentValue, currentIndex, array), initialValue
+- **기존배열을?** : 수정하지 않는다.
+- **return** : 최종적으로 누락된 결과값
+- **📝 메모**
+  - 콜백함수는 배열안에 들어있는 모든 요소들마다 호출된다.
+  - 콜백함수에서 리턴되는 값은 함께 누적된 결과 값을 리턴한다.
+  - reduce는 배열에 있는 모든 요소들의 값을 누적하는, 모아놓을때 사용하는 배열함수이다.
+  - previousValue : 이전에 콜백함수에서 리턴된 값 / 누적된 값
+  - currentValue : 배열의 item을 순차적으로 전달받는다.
+- **👀 예제**
+
+  ```jsx
+  class Student {
+    constructor(name, age, enrolled, score) {
+      this.name = name;
+      this.age = age;
+      this.enrolled = enrolled;
+      this.score = score;
+    }
+  }
+
+  const students = [
+    new Student("A", 29, false, 45),
+    new Student("B", 28, true, 80),
+    new Student("C", 30, true, 90),
+    new Student("D", 40, false, 66),
+    new Student("E", 19, true, 88),
+  ];
+
+  // 학생들의 평균 점수 계산
+  const averageSocre = students.reduce((prev, curr) => {
+    return prev + curr.score / students.length;
+  }, 0);
+
+  // 중복되는 값 제거
+
+  const fruits = ["사과", "배", "귤", "바나나", "귤"];
+  const reduceRepeat = fruits.reduce((acc, cur) => {
+    if (acc.includes(cur) === false) {
+      acc.push(cur);
+    }
+    return acc;
+  }, []);
+  ```
