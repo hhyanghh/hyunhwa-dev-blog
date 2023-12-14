@@ -1,0 +1,248 @@
+---
+title: Beyond Basics_React Fragments, Portals, Refs의 심화 사용법
+date: 2023-12-14
+description: 더 나은 코드를 위한 React의 toolbox
+category: react
+---
+
+### React의 Limitations & Fragments
+
+- JSX 코드는 하나의 최상위 요소로 감싸져 있어야 한다.
+- 그 이유는 JSX 코드가 변환될 때, React.createEmelent 함수를 사용하기 때문이다.
+
+```jsx
+React.createElement(type, props, ...children);
+```
+
+1️⃣ type : HTML 태그명 또는 컴포넌트 함수
+
+2️⃣ props : 속성 , 옵셔널
+
+3️⃣ …children : 자식 노드들
+
+- 따라서 하나의 최상위 루트 노드가 없다면 `React.createElement`가 반환하는 구조를 효과적으로 만들 수 없기 때문이다.
+- 아래는 JSX 코드가 `React.createElement`로 변환될 때 어떻게 구성되는지에 대한 간단한 코드이다.
+
+```jsx
+// JSX 코드
+<div>
+  <p>첫 번째 문단</p>
+  <p>두 번째 문단</p>
+</div>;
+
+// React.createElement로 변환될 때
+React.createElement(
+  "div",
+  null,
+  React.createElement("p", null, "첫 번째 문단"),
+  React.createElement("p", null, "두 번째 문단")
+);
+```
+
+- 따라서 하나의 div나 span 등으로 감싸져야하는데, 불필요한 DOM 요소를 추가를 방지하기 위해 React에 내장되어있는 Fragments를 사용할 수 있다.
+
+```jsx
+import React from "react";
+
+const MyComponent = () => {
+  return (
+    <React.Fragment>
+      <p>첫 번째 문단</p>
+      <p>두 번째 문단</p>
+    </React.Fragment>
+  );
+};
+
+// 또는 축약형
+import React from "react";
+
+const MyComponent = () => {
+  return (
+    <>
+      <p>첫 번째 문단</p>
+      <p>두 번째 문단</p>
+    </>
+  );
+};
+```
+
+- 이때 주의할 점은 `<></>` 구문이 사용될 때는 key 속성을 지원하지 않는다. key를 사용해야 할 경우에는 `<React.Fragment>`를 명시적으로 사용할 것 !
+
+### 더 나은 DOM 구조 관리를 위해, Portals
+
+- 리엑트에서 모달을 구현하는 경우, → 보통은 상태와 스타일링으로 구현을 해내고 있다.
+- 잘못된 코드는 아니지만, 구조적이고 clean HTML 관점에서는 이상적인 코드는 아니다.
+
+- **AS-IS**
+
+```jsx
+const ErrorModal = (props) => {
+  return (
+    <>
+      <div className={classes.backdrop} onClick={props.onConfirm} />
+      <Card className={classes.modal}>
+        <header className={classes.header}>
+          <h2>{props.title}</h2>
+        </header>
+        <div className={classes.content}>
+          <p>{props.message}</p>
+        </div>
+        <footer className={classes.actions}>
+          <Button onClick={props.onConfirm}>Okay</Button>
+        </footer>
+      </Card>
+    </>
+  );
+};
+```
+
+![react_toolbox_01](/images/blog/react_toolbox_01.png)
+
+- **TO-BE (아마도 이 HTML 구조가 더 좋을 듯?)**
+
+![react_toolbox_01](/images/blog/react_toolbox_02.png)
+
+1️⃣ ErrorModal 컴포넌트 분리하기
+
+```jsx
+import React from "react";
+import Button from "./Button";
+import Card from "./Card";
+
+import classes from "./ErrorModal.module.css";
+
+const Backdrop = (props) => {
+  return <div className={classes.backdrop} onClick={props.onConfirm} />;
+};
+
+const ModalOverlay = (props) => {
+  return (
+    <Card className={classes.modal}>
+      <header className={classes.header}>
+        <h2>{props.title}</h2>
+      </header>
+      <div className={classes.content}>
+        <p>{props.message}</p>
+      </div>
+      <footer className={classes.actions}>
+        <Button onClick={props.onConfirm}>Okay</Button>
+      </footer>
+    </Card>
+  );
+};
+
+const ErrorModal = (props) => {
+  return <></>;
+};
+
+export default ErrorModal;
+```
+
+2️⃣ createPortal 함수 사용
+
+![react_toolbox_01](/images/blog/react_toolbox_03.png)
+
+1. 첫번째 arg : 렌더링되어야하는 리엑트 노드
+
+2. 두번째 arg : 포인터! 이 요소가 렌더링되어야하는 실제 DOM 컨테이너
+
+```jsx
+{
+  ReactDOM.createPortal(
+    <Backdrop onClick={props.onConfirm} />,
+    document.getElementById("backdrop-root")
+  );
+}
+```
+
+### ref
+
+- 특정 컴포넌트나 DOM 요소에 접근하기 위한 수단으로 사용
+- React의 데이터 흐름을 벗어나 직접적으로 DOM을 조작하거나 다른 컴포넌트와 상호작용할 때 유용하다.
+- 직접적으로 DOM을 조작한다!!
+
+```jsx
+import React, { useRef, useEffect } from "react";
+
+const InputComponent = () => {
+  // Callback Ref를 생성합니다.
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    // 컴포넌트가 마운트되었을 때 호출됩니다.
+    // inputRef.current는 현재 input 요소를 참조합니다.
+    inputRef.current.focus();
+  }, []);
+
+  return (
+    <div>
+      {/* ref 속성을 통해 inputRef에 ref를 할당합니다. */}
+      <input type="text" ref={inputRef} />
+      <button onClick={() => inputRef.current.focus()}>
+        입력란에 포커스 주기
+      </button>
+    </div>
+  );
+};
+
+export default InputComponent;
+```
+
+### input | 제어 컴포넌트 vs 비제어 컴포넌트
+
+- 리엑트에서 컴포넌트의 상태 및 동작을 관리하는 두가지 주요 패턴
+
+1️⃣ 제어 컴포넌트 (Controlled Component)
+
+- react의 state(상태)를 사용하여 input 요소의 값을 관리하는 방식이다.
+- input 요소의 값은 컴포넌트의 state에 의해 제어되며, 값이 변경될 때마다 state가 업데이트되어 화면이 다시 렌더링된다.
+- ( === 리엑트가 제어한다!)
+
+```jsx
+import React, { useState } from "react";
+
+const ControlledInput = () => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  return <input type="text" value={inputValue} onChange={handleChange} />;
+};
+```
+
+2️⃣ 비제어 컴포넌트 (Uncontrolled Component)
+
+- react의 state를 사용하지 않고, DOM 자체에서 값을 추적하는 방식이다.
+- ref를 사용하여 DOM 요소에 직접적으로 접근하여 값을 추출하거나 조작한다.
+
+```jsx
+import React, { useRef } from "react";
+
+const UncontrolledInput = () => {
+  const inputRef = useRef();
+
+  const handleButtonClick = () => {
+    // inputRef를 통해 현재 input 요소의 값을 가져옴.
+    console.log(inputRef.current.value);
+  };
+
+  return (
+    <div>
+      <input type="text" ref={inputRef} />
+      <button onClick={handleButtonClick}>값 가져오기</button>
+    </div>
+  );
+};
+```
+
+**📝 완벽하게 어떨때 무엇을 사용해라! 라는건 없지만, 주로**
+
+- **제어 컴포넌트:**
+  - React의 데이터 흐름을 잘 활용하고 싶을 때.
+  - 입력 값에 대한 유효성 검사나 변환 작업을 할 때.
+  - 폼 전송 시에 사용자 입력 값을 직접 처리하고 싶을 때.
+- **비제어 컴포넌트:**
+  - 외부 라이브러리와 통합하거나, React의 제어를 벗어나 DOM을 직접 다루고자 할 때.
+  - 간단한 폼 처리 및 입력 값을 가져오는 용도로 사용할 때.
