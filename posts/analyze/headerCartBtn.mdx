@@ -1,0 +1,103 @@
+---
+title: 코드분석 | HeaderCartBtn 컴포넌트 분석
+date: 2023-12-21
+description: 리엑트, food-order-app 프로젝트 스터디 중 코드분석
+category: analyze
+---
+
+```jsx
+import React, { useContext, useEffect, useState } from "react";
+import CartIcon from "../Cart/CartIcon";
+import CartContext from "../../store/cart-context";
+
+import classes from "./HeaderCartButton.module.css";
+
+const HeaderCartButton = (props) => {
+  const [btnIsHighlighted, setBtnIsHighlighed] = useState(false);
+  const cartCtx = useContext(CartContext);
+
+  const { items } = cartCtx;
+
+  const numberOfCartItems = items.reduce((curNumber, item) => {
+    return curNumber + item.amount;
+  }, 0);
+
+  const btnClasses = `${classes.button} ${
+    btnIsHighlighted ? classes.bump : ""
+  }`;
+  useEffect(() => {
+    if (items.length === 0) {
+      return;
+    }
+    setBtnIsHighlighed(true);
+
+    const timer = setTimeout(() => {
+      setBtnIsHighlighed(false);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [items]);
+  return (
+    <button className={btnClasses} onClick={props.onClick}>
+      <span className={classes.icon}>
+        <CartIcon />
+      </span>
+      <span>Your Cart</span>
+      <span className={classes.badge}>{numberOfCartItems}</span>
+    </button>
+  );
+};
+
+export default HeaderCartButton;
+```
+
+1. state 관리
+
+```jsx
+const [btnIsHighlighted, setBtnIsHighlighed] = useState(false);
+```
+
+1. context 사용
+
+```jsx
+const cartCtx = useContext(CartContext);
+const { items } = cartCtx;
+```
+
+1. bedge 에 들어가는 숫자는?
+
+```jsx
+const numberOfCartItems = items.reduce((curNumber, item) => {
+  return curNumber + item.amount;
+}, 0);
+```
+
+1. btn 에 생동감 더하기!
+
+- 버튼의 클래스를 조건부로 생성한다.
+- btnIsHighlighed가 true 면, bump (애니메이션 클래스)를 추가한다.
+
+1. useEffect를 이용하여 위의 생동감 구현하기
+
+- useEffect는 CartContext의 items 배열이 변경될 때마다 트리거된다.
+- items.length가 0이 아닌 경우에만 btnIsHighlighted를 true로 설정하여, 버튼에 시각적인 강조 효과를 부여한다.
+- 300 밀리초 후에 다시 false로 설정하고 (setTimeout),
+- 컴포넌트가 언마운트 되거나, 300밀리초가 지나기 전에 items가 변경되면 타이머를 clear 한다.
+
+### 🧐 useEffect의 defendency 에 [cartCtx.items] 가 아닌, destructuring 한 items를 사용한 이유는?
+
+- useEffect의 dependency array에 들어가는 값이 변경될때마다 useEffect가 실행된다.
+- 만약, dependency array에 `cartCtx.items`를 직접 사용 했다면, `cartCtx.items` 가 **객체참조**이기 때문에 배열 내용이 변경되더라도 참조는 변경되지 않을 수 있다.
+- React는 === 으로 의존성을 비교하므로 참조가 변경되지 않으면 useEffect가 다시 실행되지 않을 수 있다.
+
+### 🤓 array method `reduce`
+
+```jsx
+const numberOfCartItems = items.reduce((curNumber, item) => {
+  return curNumber + item.amount;
+}, 0);
+```
+
+![analyze_01_01](/images/blog/analyze_01_01.png)
