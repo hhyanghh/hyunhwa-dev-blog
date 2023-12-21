@@ -2,31 +2,28 @@ import { categorys } from "@/data/categories";
 import { Dispatch, SetStateAction } from "react";
 
 interface CategoryListProps {
-  setSellect: Dispatch<SetStateAction<string>>;
-  sellect: string;
+  setSelect: Dispatch<SetStateAction<string>>;
+  select: string;
 }
 
-const sellectedStyle =
+const selectedStyle =
   "bg-navy text-white dark:bg-orange px-2 py-1 rounded-xl sm:text-lg ";
 const defaultStyle =
   "bg-gray-300 dark:text-black hover:bg-navy hover:text-white hover:dark:bg-orange px-2 py-1 sm:text-lg rounded-xl transition-transform duration-300  ";
 
-export default function CategoryList({
-  setSellect,
-  sellect,
-}: CategoryListProps) {
+export default function CategoryList({ setSelect, select }: CategoryListProps) {
   return (
     <div className="flex flex-wrap gap-4 mt-10">
       {categorys.map((category) => {
-        if (sellect === category.keyword)
+        if (select === category.keyword)
           return (
             <button
               type="button"
               onClick={() =>
-                setSellect(category.keyword === "All" ? "" : category.keyword)
+                setSelect(category.keyword === "All" ? "" : category.keyword)
               }
               key={category.keyword}
-              className={sellectedStyle}
+              className={selectedStyle}
             >
               <div className="flex items-center">
                 {category.icon}
@@ -38,7 +35,7 @@ export default function CategoryList({
           <button
             type="button"
             onClick={() =>
-              setSellect(category.keyword === "All" ? "" : category.keyword)
+              setSelect(category.keyword === "All" ? "" : category.keyword)
             }
             key={category.keyword}
             className={defaultStyle}
