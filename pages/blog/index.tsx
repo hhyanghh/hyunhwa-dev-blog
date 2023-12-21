@@ -19,19 +19,19 @@ export const getStaticProps = async () => {
 };
 
 const Blog = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [sellect, setSellect] = useState<string>("");
+  const [select, setSelect] = useState<string>("");
 
   return (
     <div className="flex flex-col">
-      <CategoryList sellect={sellect} setSellect={setSellect} />
-      {sellect === "" ? (
+      <CategoryList select={select} setSelect={setSelect} />
+      {select === "" ? (
         <PostList posts={posts} />
-      ) : (posts as Post[]).filter((post) => post.category === sellect)
+      ) : (posts as Post[]).filter((post) => post.category === select)
           .length === 0 ? (
         <Empty />
       ) : (
         <PostList
-          posts={(posts as Post[]).filter((post) => post.category === sellect)}
+          posts={(posts as Post[]).filter((post) => post.category === select)}
         />
       )}
     </div>
