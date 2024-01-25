@@ -1,0 +1,150 @@
+---
+title: Firestore에서 데이터 가져오기, useEffect의 cleanup
+date: 2024-01-25
+description: onSnapshot 메서드 사용하기, useEffect cleanup 함수의 역할
+category: react
+---
+
+## 1. useCollection hook 만들기
+
+```jsx
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { appFireStore } from "../firebase/config";
+
+export const useCollection = (transition, myQuery) => {
+  const [documents, setDocuments] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let q;
+    if (myQuery) {
+      q = query(
+        collection(appFireStore, transition),
+        where(...myQuery),
+        orderBy("createdTime", "desc")
+      );
+    }
+    const unsubscribe = onSnapshot(
+      myQuery ? q : collection(appFireStore, transition),
+      (snapshot) => {
+        console.log(snapshot, "snapshot은 배열 형태로 저장되어 있다.");
+        let result = [];
+
+        snapshot.docs.forEach((doc) => {
+          result.push({ ...doc.data(), id: doc.id });
+        });
+
+        console.log(result, "result ?");
+
+        setDocuments(result);
+        setError(null);
+      },
+      (error) => {
+        setError(error.message);
+      }
+    );
+    return unsubscribe;
+  }, [collection]);
+
+  return { documents, error };
+};
+```
+
+### 1) 공식문서 사용 예시
+
+[👉🏻 공식문서 바로가기](https://firebase.google.com/docs/firestore/query-data/listen)
+
+![firestore 공식문서](/images/blog/firestore_onsnapshot_01.png)
+
+실시간 데이터를 가져오려면, onSnapshot() 메서드를 사용하면 된다.
+
+### 2) onSnapshot 의 인자
+
+- `collection(appFirestore, transition)`, : Firestore 컬렉션에 대한 참조
+- `(snapshot) ⇒ {}`, : 스냅샷 데이터를 처리하는 콜백함수
+  - firestore의 데이터가 변경될 때 실행되는 콜백함수
+  - snapshot은 그 **순간**의 데이터 스냅샷을 나타낸다. (가장 최신!🔥)
+- `(error) ⇒ {}` : 에러를 처리하는 콜백함수
+
+### 3) console의 결과
+
+- 처음 firestore에서 받아오는 snapshot의 형태
+  ![console 결과](/images/blog/firestore_onsnapshot_02.png)
+- 가공한 결과 result
+  ![console 결과](/images/blog/firestore_onsnapshot_03.png)
+
+### 4) error handling
+
+- firestore에서 자체적으로 에러를 헨들링해주고 있다.
+
+![firestore 공식문서](/images/blog/firestore_onsnapshot_04.png)
+
+## 2. useEffect cleanup 의 역할
+
+`return unsubscribe;`
+
+```jsx
+return () => {
+  unsubscribe();
+};
+```
+
+useEffect가 반환하는 함수는 cleanup 함수이다.
+
+이는 컴포넌트가 언마운트되거나, 의존성 배열이 변경될 때 리스너를 제대로 구독해제(unsubscribe) 하도록 보장한다. 이를 통해 메모리 누수와 불필요한 리소스 소모를 방지할 수 있다.
+
+따라서, `unsubscribe` 함수는 Firestore 컬렉션의 변경사항을 더이상 감지할 필요가 없을때 리스너를 중지시키는데 사용된다.
+
+## 3. useCollection hook 사용하기
+
+- Home 컴포넌트
+
+```jsx
+const Home = () => {
+  //..
+  const { documents, error } = useCollection("diary");
+  return (
+    <main className={styles.cont}>
+      <aside className={styles.side_menu}>
+        <DiaryForm uid={user.uid} />
+      </aside>
+      <ul className={styles.content_list}>
+        {error && <strong>{error}</strong>}
+        {documents && <DiaryList diaries={documents} />}
+      </ul>
+    </main>
+  );
+};
+
+export default Home;
+```
+
+- DiaryList 컴포넌트
+
+```jsx
+const DiaryList = ({ diaries }) => {
+  //..
+  return (
+    <>
+      {diaries.map((item) => {
+        return (
+          <li key={item.id}>
+            <strong className={styles.title}>{item.title}</strong>
+            <p className={styles.text}>{item.text}</p>
+            <button onClick={() => deleteDocument(item.id)}>X</button>
+          </li>
+        );
+      })}
+    </>
+  );
+};
+
+export default DiaryList;
+```
