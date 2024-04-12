@@ -1,0 +1,80 @@
+---
+title: 네이버 책 검색 API 연동하기 1편
+date: 2024-04-12
+description: 열뻗친 이야기
+category: react
+---
+
+이 글은 리엑트 프로젝트 개발 중, 네이버 책 검색 API 연동하다가 열뻗친 이야기이다.
+
+일단 간단히, 네이버 API 연동하는 순서를 소개하자면,
+
+### 1. 네이버 API 키 얻기
+
+- 네이버 개발자 센터에 접속하여 계정을 만들고 로그인한다.
+- 애플리케이션을 등록하여 Client ID와 Client Secret을 획득한다.
+
+### 2. 환경변수 설정
+
+- API 호출 시 사용할 네이버 클라이언트 ID와 시크릿 키를 환경변수로 설정한다.
+
+```jsx
+const clientId = process.env.REACT_APP_NAVER_CLIENT_ID;
+const clientSecret = process.env.REACT_APP_NAVER_CLIENT_SECRET;
+```
+
+### 3. API 호출
+
+- `fetchBooks` axios를 사용하여 API 호출 함수 생성
+- React 컴포넌트에서 API 호출
+
+```jsx
+const handleSearch = async () => {
+  try {
+    const result = await fetchBooks(query);
+    setBooks(result);
+  } catch (error) {
+    console.error("Error searching books:", error);
+  }
+};
+```
+
+이렇게 단계를 따라서 쉽게 하다보면 `CORS 에러`를 만나게 된다 ..
+
+그래서 일단은 Proxy를 설정해서, 개발환경에서는 API를 사용할 수 있게끔 했다.
+
+```jsx
+"proxy": "https://openapi.naver.com",
+```
+
+```jsx
+import axios from "axios";
+
+const fetchBooks = async (query) => {
+  const clientId = process.env.REACT_APP_NAVER_CLIENT_ID;
+  const clientSecret = process.env.REACT_APP_NAVER_CLIENT_SECRET;
+
+  const url = `/v1/search/book.json?query=${query}`;
+  const headers = {
+    "X-Naver-Client-Id": clientId,
+    "X-Naver-Client-Secret": clientSecret,
+  };
+
+  try {
+    const response = await axios.get(url, {
+      params: { query },
+      headers,
+    });
+    return response.data.items;
+  } catch (error) {
+    console.error("Error searching books:", error);
+    throw error;
+  }
+};
+
+export default fetchBooks;
+```
+
+그러나 이건 말그대로 개발환경에서만 사용할 수 있는 임시방편이며, 배포 후 환경에서는 아마 동일한 에러가 발생할 것이다.
+
+따라서 이 이후에 firebase 서비스 중 사용할 수 있는걸 적용해 해결해 보려고 한다!
